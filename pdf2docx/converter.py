@@ -40,7 +40,11 @@ class Converter:
         # fitz object
         self.filename_pdf = pdf_file
         self.password = str(password or '')
-        self._fitz_doc = fitz.Document(pdf_file)
+        # added option to read in pdf file via byte stream
+        try:
+            self._fitz_doc = fitz.Document(None, pdf_file, "pdf")
+        except:
+            self._fitz_doc = fitz.Document(pdf_file)
 
         # initialize empty pages container
         self._pages = Pages()
@@ -192,7 +196,7 @@ class Converter:
 
         # docx file to convert to        
         filename = docx_filename or f'{self.filename_pdf[0:-len(".pdf")]}.docx'
-        if os.path.exists(filename): os.remove(filename)
+        # if os.path.exists(filename): os.remove(filename) # nothing to remove if file were input as bytes
 
         # create page by page        
         docx_file = Document() 
